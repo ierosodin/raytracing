@@ -11,6 +11,8 @@
 #define ROWS 512
 #define COLS 512
 
+#define THREAD_NUM 128
+
 static void write_to_ppm(FILE *outfile, uint8_t *pixels,
                          int width, int height)
 {
@@ -49,14 +51,37 @@ int main()
     printf("# Rendering scene\n");
     /* do the ray tracing with the given geometry */
     clock_gettime(CLOCK_REALTIME, &start);
-    raytracing(pixels, background,
-               rectangulars, spheres, lights, &view, ROWS, COLS);
+
+    pthread_t *id = (pthread_t *) malloc(THREAD_NUM * sizeof(pthread_t));
+    rays **ptr = (rays **) malloc(THREAD_NUM * sizeof(rays *));
+    for (int i = 0; i < THREAD_NUM; i++) {
+        ptr[i] = (rays *) malloc(sizeof(rays));
+        ptr[i]->pixels = pixels;
+        ptr[i]->background_color = background;
+        ptr[i]->rectangulars = rectangulars;
+        ptr[i]->spheres = spheres;
+        ptr[i]->lights = lights;
+        ptr[i]->view = &view;
+        ptr[i]->width = ROWS;
+        ptr[i]->height = COLS;
+        ptr[i]->id = i;
+        ptr[i]->thread_num = THREAD_NUM;
+        pthread_create(&id[i], NULL, (void *) &raytracing, (void *) ptr[i]);
+    }
+
+    for (int i = 0; i < THREAD_NUM; i++)
+        pthread_join(id[i], NULL);
+
     clock_gettime(CLOCK_REALTIME, &end);
     {
         FILE *outfile = fopen(OUT_FILENAME, "wb");
         write_to_ppm(outfile, pixels, ROWS, COLS);
         fclose(outfile);
     }
+
+    for (int i = 0; i < THREAD_NUM; i++)
+        free(ptr[i]);
+    free(ptr);
 
     delete_rectangular_list(&rectangulars);
     delete_sphere_list(&spheres);

@@ -27,8 +27,9 @@ double length(const double *v)
 static FORCE_INLINE
 void add_vector(const double *a, const double *b, double *out)
 {
-    for (int i = 0; i < 3; i++)
-        out[i] = a[i] + b[i];
+    out[0] = a[0] + b[0];
+    out[1] = a[1] + b[1];
+    out[2] = a[2] + b[2];
 }
 
 static FORCE_INLINE
@@ -42,15 +43,17 @@ void subtract_vector(const double *a, const double *b, double *out)
 static FORCE_INLINE
 void multiply_vectors(const double *a, const double *b, double *out)
 {
-    for (int i = 0; i < 3; i++)
-        out[i] = a[i] * b[i];
+    out[0] = a[0] * b[0];
+    out[1] = a[1] * b[1];
+    out[2] = a[2] * b[2];
 }
 
 static FORCE_INLINE
 void multiply_vector(const double *a, double b, double *out)
 {
-    for (int i = 0; i < 3; i++)
-        out[i] = a[i] * b;
+    out[0] = a[0] * b;
+    out[1] = a[1] * b;
+    out[2] = a[2] * b;
 }
 
 static FORCE_INLINE

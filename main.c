@@ -67,11 +67,15 @@ task_t *new_task()
 
 int main(int argc, char* argv[])
 {
-    if (argc > 1)
+    if (argc > 1) {
         THREAD_NUM = atoi(argv[1]);
-
-    if (argc > 2)
-        CASE_SPLIT = atoi(argv[2]);
+        if (argc == 2)
+            CASE_SPLIT = atoi(argv[2]);
+        else {
+            printf("Wrong argument!");
+            exit(0);
+        }
+    }
 
     uint8_t *pixels;
     light_node lights = NULL;

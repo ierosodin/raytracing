@@ -4,7 +4,7 @@
 #include "objects.h"
 #include <stdint.h>
 
-typedef struct ray {
+typedef struct ray_arg {
     uint8_t *pixels;
     double *background_color;
     rectangular_node rectangulars;
@@ -15,7 +15,7 @@ typedef struct ray {
     int height;
     int id;
     int case_num;
-} rays;
+} ray_arg;
 
 void raytracing(void *r);
 #endif

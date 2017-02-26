@@ -453,20 +453,20 @@ static unsigned int ray_color(const point3 e, double t,
 }
 
 /* @param background_color this is not ambient light */
-void raytracing(void *ray)
+void raytracing(void *r)
 {
-    rays *r = (rays *) ray;
+    ray_arg *arg = (ray_arg *) r;
     point3 u, v, w, d;
     color object_color = { 0.0, 0.0, 0.0 };
 
     /* calculate u, v, w */
-    calculateBasisVectors(u, v, w, r->view);
+    calculateBasisVectors(u, v, w, arg->view);
 
     idx_stack stk;
 
     int factor = sqrt(SAMPLES);
-    for (int j = r->id; j < r->height; j += r->case_num) {
-        for (int i = 0; i < r->width; i++) {
+    for (int j = arg->id; j < arg->height; j += arg->case_num) {
+        for (int i = 0; i < arg->width; i++) {
             double R = 0, G = 0, B = 0;
             /* MSAA */
             for (int s = 0; s < SAMPLES; s++) {
@@ -474,22 +474,22 @@ void raytracing(void *ray)
                 rayConstruction(d, u, v, w,
                                 i * factor + s / factor,
                                 j * factor + s % factor,
-                                r->view,
-                                r->width * factor, r->height * factor);
-                if (ray_color(r->view->vrp, 0.0, d, &stk, r->rectangulars, r->spheres,
-                              r->lights, object_color,
+                                arg->view,
+                                arg->width * factor, arg->height * factor);
+                if (ray_color(arg->view->vrp, 0.0, d, &stk, arg->rectangulars, arg->spheres,
+                              arg->lights, object_color,
                               MAX_REFLECTION_BOUNCES)) {
                     R += object_color[0];
                     G += object_color[1];
                     B += object_color[2];
                 } else {
-                    R += r->background_color[0];
-                    G += r->background_color[1];
-                    B += r->background_color[2];
+                    R += arg->background_color[0];
+                    G += arg->background_color[1];
+                    B += arg->background_color[2];
                 }
-                r->pixels[((i + (j * r->width)) * 3) + 0] = R * 255 / SAMPLES;
-                r->pixels[((i + (j * r->width)) * 3) + 1] = G * 255 / SAMPLES;
-                r->pixels[((i + (j * r->width)) * 3) + 2] = B * 255 / SAMPLES;
+                arg->pixels[((i + (j * arg->width)) * 3) + 0] = R * 255 / SAMPLES;
+                arg->pixels[((i + (j * arg->width)) * 3) + 1] = G * 255 / SAMPLES;
+                arg->pixels[((i + (j * arg->width)) * 3) + 2] = B * 255 / SAMPLES;
             }
         }
     }

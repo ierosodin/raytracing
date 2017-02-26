@@ -99,10 +99,10 @@ int main(int argc, char* argv[])
     pool = (tpool_t *) malloc(sizeof(tpool_t));
     tpool_init(pool, THREAD_NUM, task_run);
 
-    rays **ptr = (rays **) malloc(CASE_SPLIT * sizeof(rays *));
+    ray_arg **ptr = (ray_arg **) malloc(CASE_SPLIT * sizeof(ray_arg *));
     for (int i = 0; i < CASE_SPLIT; i++) {
         task_t *_task = (task_t *) malloc(sizeof(task_t));
-        ptr[i] = (rays *) malloc(sizeof(rays));
+        ptr[i] = (ray_arg *) malloc(sizeof(ray_arg));
         ptr[i]->pixels = pixels;
         ptr[i]->background_color = background;
         ptr[i]->rectangulars = rectangulars;

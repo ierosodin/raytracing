@@ -70,6 +70,9 @@ int main(int argc, char* argv[])
     if (argc > 1)
         THREAD_NUM = atoi(argv[1]);
 
+    if (argc > 2)
+        CASE_SPLIT = atoi(argv[2]);
+
     uint8_t *pixels;
     light_node lights = NULL;
     rectangular_node rectangulars = NULL;
@@ -134,5 +137,10 @@ int main(int argc, char* argv[])
     free(pixels);
     printf("Done!\n");
     printf("Execution time of raytracing() : %lf sec\n", diff_in_second(start, end));
+
+    FILE *output = fopen("pthread.txt", "a");
+    fprintf(output, "%d %lf\n", THREAD_NUM, diff_in_second(start, end));
+    fclose(output);
+
     return 0;
 }

@@ -11,8 +11,6 @@
 #define ROWS 512
 #define COLS 512
 
-#define THREAD_NUM 128
-
 static void write_to_ppm(FILE *outfile, uint8_t *pixels,
                          int width, int height)
 {
@@ -33,8 +31,13 @@ static double diff_in_second(struct timespec t1, struct timespec t2)
     return (diff.tv_sec + diff.tv_nsec / 1000000000.0);
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    int THREAD_NUM = 128;
+
+    if (argc > 1)
+        THREAD_NUM = atoi(argv[1]);
+
     uint8_t *pixels;
     light_node lights = NULL;
     rectangular_node rectangulars = NULL;
@@ -89,5 +92,10 @@ int main()
     free(pixels);
     printf("Done!\n");
     printf("Execution time of raytracing() : %lf sec\n", diff_in_second(start, end));
+
+    FILE *output = fopen("pthread.txt", "a");
+    fprintf(output, "%d %lf\n", THREAD_NUM, diff_in_second(start, end));
+    fclose(output);
+
     return 0;
 }

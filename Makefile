@@ -43,6 +43,17 @@ use-models.h: models.inc Makefile
 	        -e 's/^rectangular /append_rectangular/g' \
 	        -e 's/rectangular[0-9]/(\&&, \&rectangulars);/g' \
 	        -e 's/ = {//g' >> use-models.h
+calculate:
+	gcc -O0 calculate.c -o calculate
+	for number in 1 2 4 8 12 16 64 128 256 512 1024 ; do \
+		for i in `seq 1 100` ; do \
+			./raytracing $$number ; \
+		done ; \
+	done ; \
+	./calculate
+
+plot: calculate
+	gnuplot scripts/runtime.gp
 
 check: $(EXEC)
 	@./$(EXEC) && diff -u baseline.ppm out.ppm || (echo Fail; exit)
@@ -50,4 +61,4 @@ check: $(EXEC)
 
 clean:
 	$(RM) $(EXEC) $(OBJS) use-models.h \
-		out.ppm gmon.out
+		out.ppm gmon.out pthread.txt output.txt calculate

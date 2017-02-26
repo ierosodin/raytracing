@@ -56,9 +56,9 @@ int main(int argc, char* argv[])
     clock_gettime(CLOCK_REALTIME, &start);
 
     pthread_t *id = (pthread_t *) malloc(THREAD_NUM * sizeof(pthread_t));
-    rays **ptr = (rays **) malloc(THREAD_NUM * sizeof(rays *));
+    ray_arg **ptr = (ray_arg **) malloc(THREAD_NUM * sizeof(ray_arg *));
     for (int i = 0; i < THREAD_NUM; i++) {
-        ptr[i] = (rays *) malloc(sizeof(rays));
+        ptr[i] = (ray_arg *) malloc(sizeof(ray_arg));
         ptr[i]->pixels = pixels;
         ptr[i]->background_color = background;
         ptr[i]->rectangulars = rectangulars;
